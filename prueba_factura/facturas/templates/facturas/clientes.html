@@ -1,0 +1,179 @@
+{% extends 'facturas/layout/main.html' %}
+{% block titulo %}
+  Clientes
+{% endblock %}
+{% block is_active_clientes %}
+  active
+{% endblock %}
+{% block content %}
+  <div class="container pt-lg-5">
+    <div class="row py-lg-4">
+      <div class="col-lg-6">
+        <h3 class="">Clientes</h3>
+      </div>
+      <div class="col-lg-6 text-end pb-0">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Agregar cliente</button>
+
+        <!-- Modal -->
+        <div class="modal modal-lg fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form action="{% url 'new_cliente' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Añadir cliente</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Rfc" class="form-label">Rfc</label>
+                      <input type="text" name="Rfc" class="form-control" id="Rfc" placeholder="Rfc" required />
+                    </div>
+                    <div class="col">
+                      <label for="CfdiUse" class="form-label">CfdiUse</label>
+                      <input type="text" name="CfdiUse" class="form-control" id="CfdiUse" placeholder="CfdiUse" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Name" class="form-label">Name</label>
+                      <input type="text" name="Name" class="form-control" id="Name" placeholder="Name" required />
+                    </div>
+                    <div class="col">
+                      <label for="TaxResidence" class="form-label">TaxResidence</label>
+                      <input type="text" name="TaxResidence" class="form-control" id="TaxResidence" placeholder="TaxResidence" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="FiscalRegime" class="form-label">FiscalRegime</label>
+                      <input type="text" name="FiscalRegime" class="form-control" id="FiscalRegime" placeholder="FiscalRegime" required />
+                    </div>
+                    <div class="col">
+                      <label for="NumRegIdTrib" class="form-label">NumRegIdTrib</label>
+                      <input type="text" name="NumRegIdTrib" class="form-control" id="NumRegIdTrib" placeholder="NumRegIdTrib" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Email" class="form-label">Email</label>
+                      <input type="text" name="Email" class="form-control" id="Email" placeholder="Email" required />
+                    </div>
+                    <div class="col">
+                      <label for="TaxZipCode" class="form-label">TaxZipCode</label>
+                      <input type="text" name="TaxZipCode" class="form-control" id="TaxZipCode" placeholder="TaxZipCode" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mt-3 mb-2">
+                    <h5>Address</h5>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Street" class="form-label">Street</label>
+                      <input type="text" name="Street" class="form-control" id="Street" placeholder="Street" required />
+                    </div>
+                    <div class="col">
+                      <label for="Locality" class="form-label">Locality</label>
+                      <input type="text" name="Locality" class="form-control" id="Locality" placeholder="Locality" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="ExteriorNumber" class="form-label">ExteriorNumber</label>
+                      <input type="text" name="ExteriorNumber" class="form-control" id="ExteriorNumber" placeholder="ExteriorNumber" required />
+                    </div>
+                    <div class="col">
+                      <label for="Municipality" class="form-label">Municipality</label>
+                      <input type="text" name="Municipality" class="form-control" id="Municipality" placeholder="Municipality" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="InteriorNumber" class="form-label">InteriorNumber</label>
+                      <input type="text" name="InteriorNumber" class="form-control" id="InteriorNumber" placeholder="InteriorNumber" required />
+                    </div>
+                    <div class="col">
+                      <label for="State" class="form-label">State</label>
+                      <input type="text" name="State" class="form-control" id="State" placeholder="State" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Neighborhood" class="form-label">Neighborhood</label>
+                      <input type="text" name="Neighborhood" class="form-control" id="Neighborhood" placeholder="Neighborhood" required />
+                    </div>
+                    <div class="col">
+                      <label for="Country" class="form-label">Country</label>
+                      <input type="text" name="Country" class="form-control" id="Country" placeholder="Country" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="ZipCode" class="form-label">ZipCode</label>
+                      <input type="text" name="ZipCode" class="form-control" id="ZipCode" placeholder="ZipCode" required />
+                    </div>
+                    <div class="col"></div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <input type="submit" class="btn btn-primary" value="Agregar" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Clientes</h5>
+        <h6 class="card-subtitle mb-3 text-body-secondary">Lista de clientes</h6>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Rfc</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Regimen Fiscal</th>
+              <th scope="col">Email</th>
+              <th scope="col">CfdiUse</th>
+              <th scope="col">TaxResidence</th>
+              <th scope="col">NumRegIdTrib</th>
+              <th scope="col">Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for customer in customers %}
+              <tr>
+                <th scope="row">1</th>
+                <td>{{ customer.Rfc }}</td>
+                <td>{{ customer.Name }}</td>
+                <td>{{ customer.FiscalRegime }}</td>
+                <td>{{ customer.Email }}</td>
+                <td>{{ customer.CfdiUse }}</td>
+                <td>{{ customer.TaxResidence }}</td>
+                <td>{{ customer.NumRegIdTrib }}</td>
+                {% if customer.Address %}
+                  <td>{{ customer.Address.Street }},
+                    {{ customer.Address.ExteriorNumber }},
+                    {{ customer.Address.InteriorNumber }},
+                    {{ customer.Address.Neighborhood }},
+                    {{ customer.Address.ZipCode }},
+                    {{ customer.Address.Locality }},
+                    {{ customer.Address.Municipality }},
+                    {{ customer.Address.State }},
+                    {{ customer.Address.Country }}</td>
+                {% else %}
+                  <td></td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

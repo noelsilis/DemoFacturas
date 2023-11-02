@@ -1,0 +1,177 @@
+{% extends 'facturas/layout/main.html' %}
+{% block titulo %}
+  Productos
+{% endblock %}
+{% block is_active_productos %}
+  active
+{% endblock %}
+{% block content %}
+  <div class="container pt-lg-5">
+    <div class="row py-lg-4">
+      <div class="col-lg-6">
+        <h3 class="">Productos</h3>
+      </div>
+      <div class="col-lg-6 text-end pb-0">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary disabled" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Agregar producto</button>
+
+        <!-- Modal -->
+        <div class="modal modal-lg fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form action="{% url 'new_producto' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Añadir producto</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Unit" class="form-label">Unit</label>
+                      <input type="text" name="Unit" class="form-control" id="Unit" placeholder="Unit" required />
+                    </div>
+                    <div class="col">
+                      <label for="CfdiUse" class="form-label">Description</label>
+                      <input type="text" name="CfdiUse" class="form-control" id="CfdiUse" placeholder="CfdiUse" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Name" class="form-label">UnitCode</label>
+                      <input type="text" name="Name" class="form-control" id="Name" placeholder="Name" required />
+                    </div>
+                    <div class="col">
+                      <label for="TaxResidence" class="form-label">Price</label>
+                      <input type="text" name="TaxResidence" class="form-control" id="TaxResidence" placeholder="TaxResidence" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="FiscalRegime" class="form-label">IdentificationNumber</label>
+                      <input type="text" name="FiscalRegime" class="form-control" id="FiscalRegime" placeholder="FiscalRegime" required />
+                    </div>
+                    <div class="col">
+                      <label for="NumRegIdTrib" class="form-label">CodeProdServ</label>
+                      <input type="text" name="NumRegIdTrib" class="form-control" id="NumRegIdTrib" placeholder="NumRegIdTrib" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Email" class="form-label">Name</label>
+                      <input type="text" name="Email" class="form-control" id="Email" placeholder="Email" required />
+                    </div>
+                    <div class="col">
+                      <label for="TaxZipCode" class="form-label">CuentaPredial</label>
+                      <input type="text" name="TaxZipCode" class="form-control" id="TaxZipCode" placeholder="TaxZipCode" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mt-3 mb-2">
+                    <h5>Taxes</h5>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Street" class="form-label">Name</label>
+                      <input type="text" name="Street" class="form-control" id="Street" placeholder="Street" required />
+                    </div>
+                    <div class="col">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        <label class="form-check-label" for="flexCheckDefault">IsRetention</label>
+                      </div>
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        <label class="form-check-label" for="flexCheckDefault">IsFederalTax</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="ExteriorNumber" class="form-label">Rate</label>
+                      <input type="text" name="ExteriorNumber" class="form-control" id="ExteriorNumber" placeholder="ExteriorNumber" required />
+                    </div>
+                    <div class="col">
+                      <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                        <label class="form-check-label" for="flexCheckDefault">IsQuota</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="ExteriorNumber" class="form-label">Total</label>
+                      <input type="number" name="ExteriorNumber" class="form-control" id="ExteriorNumber" placeholder="ExteriorNumber" required />
+                    </div>
+                    <div class="col"></div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <input type="submit" class="btn btn-primary" value="Agregar" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Productos</h5>
+        <h6 class="card-subtitle mb-3 text-body-secondary">Lista de productos</h6>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Unit</th>
+                <th scope="col">UnitCode</th>
+                <th scope="col">IdentificationNumber</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Price</th>
+                <th scope="col">CodeProdServ</th>
+                <th scope="col">CuentaPredial</th>
+                <th scope="col">Taxes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for product in products %}
+                <tr>
+                  <td>{{ product.Unit }}</td>
+                  <td>{{ product.UnitCode }}</td>
+                  <td>{{ product.IdentificationNumber }}</td>
+                  <td>{{ product.Name }}</td>
+                  <td>{{ product.Description }}</td>
+                  <td>{{ product.Price }}</td>
+                  <td>{{ product.CodeProdServ }}</td>
+                  <td>{{ product.CuentaPredial }}</td>
+                  <td>
+                    {% for tax in product.Taxes %}
+                      <div class="d-flex align-items-center justify-content-start">Name: {{ tax.Name }}</div>
+                      <div class="d-flex align-items-center justify-content-start">Rate: {{ tax.Rate }}</div>
+                      <div class="d-flex align-items-center justify-content-start">
+                        IsRetention:{% if tax.IsRetention %}
+                          <i class="bi bi-check-circle-fill ps-2" style="color:green"></i>
+                        {% else %}
+                          <i class="bi bi-x-circle-fill ps-2" style="color:darkorange"></i>
+                        {% endif %}
+                      </div>
+                      <div class="d-flex align-items-center justify-content-start">
+                        IsFederalTax:{% if tax.IsFederalTax %}
+                          <i class="bi bi-check-circle-fill ps-2" style="color:green"></i>
+                        {% else %}
+                          <i class="bi bi-x-circle-fill ps-2" style="color:darkorange"></i>
+                        {% endif %}
+                      </div>
+                      <div class="d-flex align-items-center justify-content-start">Total: {{ tax.Total }}</div>
+                    {% endfor %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

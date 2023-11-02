@@ -1,0 +1,2 @@
+django==4.2.6
+git+https://github.com/Facturama/facturama-python-sdk.git@master#egg=facturama

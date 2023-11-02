@@ -1,0 +1,137 @@
+{% extends 'facturas/layout/main.html' %}
+{% block titulo %}
+  Sucursal
+{% endblock %}
+{% block is_active_sucursal %}
+  active
+{% endblock %}
+{% block content %}
+  <div class="container pt-lg-5">
+    <div class="row py-lg-4">
+      <div class="col-lg-6">
+        <h3 class="">Sucursal</h3>
+      </div>
+      <div class="col-lg-6 text-end pb-0">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary disabled" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Agregar sucursal</button>
+
+        <!-- Modal -->
+        <div class="modal modal-lg fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <form action="{% url 'new_sucursal' %}" method="post">
+                {% csrf_token %}
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Añadir sucursal</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Unit" class="form-label">Name</label>
+                      <input type="text" name="Unit" class="form-control" id="Unit" placeholder="Unit" required />
+                    </div>
+                    <div class="col">
+                      <label for="CfdiUse" class="form-label">Description</label>
+                      <input type="text" name="CfdiUse" class="form-control" id="CfdiUse" placeholder="CfdiUse" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mt-3 mb-2">
+                    <h5>Address</h5>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Street" class="form-label">Street</label>
+                      <input type="text" name="Street" class="form-control" id="Street" placeholder="Street" required />
+                    </div>
+                    <div class="col">
+                      <label for="Locality" class="form-label">Locality</label>
+                      <input type="text" name="Locality" class="form-control" id="Locality" placeholder="Locality" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="ExteriorNumber" class="form-label">ExteriorNumber</label>
+                      <input type="text" name="ExteriorNumber" class="form-control" id="ExteriorNumber" placeholder="ExteriorNumber" required />
+                    </div>
+                    <div class="col">
+                      <label for="Municipality" class="form-label">Municipality</label>
+                      <input type="text" name="Municipality" class="form-control" id="Municipality" placeholder="Municipality" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="InteriorNumber" class="form-label">InteriorNumber</label>
+                      <input type="text" name="InteriorNumber" class="form-control" id="InteriorNumber" placeholder="InteriorNumber" required />
+                    </div>
+                    <div class="col">
+                      <label for="State" class="form-label">State</label>
+                      <input type="text" name="State" class="form-control" id="State" placeholder="State" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="Neighborhood" class="form-label">Neighborhood</label>
+                      <input type="text" name="Neighborhood" class="form-control" id="Neighborhood" placeholder="Neighborhood" required />
+                    </div>
+                    <div class="col">
+                      <label for="Country" class="form-label">Country</label>
+                      <input type="text" name="Country" class="form-control" id="Country" placeholder="Country" required />
+                    </div>
+                  </div>
+                  <div class="row text-start mb-2">
+                    <div class="col">
+                      <label for="ZipCode" class="form-label">ZipCode</label>
+                      <input type="text" name="ZipCode" class="form-control" id="ZipCode" placeholder="ZipCode" required />
+                    </div>
+                    <div class="col"></div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <input type="submit" class="btn btn-primary" value="Agregar" />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Sucursal</h5>
+        <h6 class="card-subtitle mb-3 text-body-secondary">Lista de sucursales</h6>
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Description</th>
+              <th scope="col">IdentificationNumber</th>
+              <th scope="col">Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for sucursal in sucursales %}
+              <tr>
+                <th scope="row">1</th>
+                <td>{{ sucursal.Name }}</td>
+                <td>{{ sucursal.Description }}</td>
+                <td>{{ sucursal.IdentificationNumber }}</td>
+                <td>{{ sucursal.Address.Street }},
+                  {{ sucursal.Address.ExteriorNumber }},
+                  {{ sucursal.Address.InteriorNumber }},
+                  {{ sucursal.Address.Neighborhood }},
+                  {{ sucursal.Address.ZipCode }},
+                  {{ sucursal.Address.Locality }},
+                  {{ sucursal.Address.Municipality }},
+                  {{ sucursal.Address.State }},
+                  {{ sucursal.Address.Country }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
