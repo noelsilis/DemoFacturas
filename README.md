@@ -17,8 +17,20 @@ Esta app de django es una demo inicial para consumir la API de Facturama mediant
 pipenv shell
 ```
 
-### 1.3 Instala los paquetes pip necesarios
-- 1.3.1 Instala los paquetes especifcados desde el archivo **requirements.txt**:
+### 1.3 Crear archivo .env
+- 1.3.1 Dentro de la carpeta raiz del proyecto crea el archivo .env
+```
+touch .env
+```
+
+- 1.3.2 Copia la siguiente configuración y ajustala a tus necesidades
+```
+FACTURAMA_USER='corvusdata'
+FACTURAMA_PASSWORD='123'
+```
+
+### 1.4 Instala los paquetes pip necesarios
+- 1.4.1 Instala los paquetes especifcados desde el archivo **requirements.txt**:
 ```
 pip install -r requirements.txt
 ```

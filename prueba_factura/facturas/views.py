@@ -1,18 +1,19 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from decouple import config
 
 import facturama
 
 # Create your views here.
 def obtenerClientes(request):
-    facturama._credentials = ('corvusdata', '#corvus1234')
+    facturama._credentials = (config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
     facturama.sandbox = True
     customers = facturama.Client.all(0)
     return render(request, 'facturas/clientes.html', {'customers': customers })
 
 def capturarCliente(request):
     if request.method == "POST":
-        facturama._credentials = ('corvusdata', '#corvus1234')
+        facturama._credentials =(config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
         facturama.sandbox = True
         datos_cliente = ["Rfc","Name","FiscalRegime","Email","CfdiUse","TaxResidence","NumRegIdTrib","TaxZipCode"]
         direccion_cliente = ["Street","ExteriorNumber","InteriorNumber","Neighborhood","ZipCode","Locality","Municipality","State","Country"]
@@ -30,7 +31,7 @@ def capturarCliente(request):
         return render(request, 'facturas/clientes.html')
 
 def obtenerProductos(request):
-    facturama._credentials = ('corvusdata', '#corvus1234')
+    facturama._credentials =(config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
     facturama.sandbox = True
     products = facturama.Product.all()
     return render(request, 'facturas/productos.html', {'products': products })
@@ -53,7 +54,7 @@ def capturarProducto(request):
 
 
 def obtenerSucursales(request):
-    facturama._credentials = ('corvusdata', '#corvus1234')
+    facturama._credentials =(config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
     facturama.sandbox = True
     sucursales = facturama.BranchOffice.all()
     return render(request, 'facturas/sucursales.html', {'sucursales': sucursales })
