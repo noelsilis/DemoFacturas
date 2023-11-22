@@ -4,12 +4,41 @@ from decouple import config
 
 import facturama
 
+#prueba validar si es un ajax
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+#Consultas AJAX
+def catalogs_client(request):
+    if is_ajax(request=request):
+        rfc = request.GET.get('rfc',None)
+        cfdiUses = facturama.CfdiUsesCatalog.query(rfc)
+        regimenFiscal = facturama.FiscalRegimensCatalog.query(rfc)
+        data = {
+            'cfdiUses': cfdiUses,
+            'regimenFiscal': regimenFiscal
+        }
+    return JsonResponse(data)
+
+def catalogs_Addr(request):
+    if is_ajax(request=request):
+        paises = facturama.CountriesCatalog.query("")
+        data = {
+            'paises': paises
+        }
+    return JsonResponse(data)
+
 # Create your views here.
 def obtenerClientes(request):
     facturama._credentials = (config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
     facturama.sandbox = True
-    customers = facturama.Client.all(0)
-    return render(request, 'facturas/clientes.html', {'customers': customers })
+    clientes = facturama.Client.all(0)
+    #cfdiUses = facturama.CfdiUsesCatalog.query("cass880926vd1")
+    #regimenFiscal = facturama.FiscalRegimensCatalog.all(0)
+    context ={
+        "customers":clientes
+    }
+    return render(request, 'facturas/clientes.html', context)
 
 def capturarCliente(request):
     if request.method == "POST":
@@ -19,16 +48,20 @@ def capturarCliente(request):
         direccion_cliente = ["Street","ExteriorNumber","InteriorNumber","Neighborhood","ZipCode","Locality","Municipality","State","Country"]
         customer_object = {}
         customer_address = {}
-        customer["Id"] = ""
+        #customer["Id"] = ""
         for clave in datos_cliente:
             customer_object[clave] = request.POST.get(clave)
 
         for clave in direccion_cliente:
             customer_address[clave] = request.POST.get(clave)
-        
+
         customer_object["Address"] = customer_address
+
+        #print("datos customer ", customer_object)
+
         facturama.Client.create(customer_object)
-        return render(request, 'facturas/clientes.html')
+        clientes = facturama.Client.all(0)
+        return render(request, 'facturas/clientes.html', {'customers': clientes })
 
 def obtenerProductos(request):
     facturama._credentials =(config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
@@ -131,4 +164,4 @@ def generarCFDI(request):
                 "Total": 1740.0
             }
         ]
-    }   
+    }
