@@ -1,6 +1,7 @@
-{% extends 'facturas/layout/main.html' %} {% block titulo %} Clientes {%
-endblock %} {% block is_active_clientes %} active {% endblock %} {% block
-content %}
+{% extends 'facturas/layout/main.html' %}
+{% block titulo %} Clientes {% endblock %}
+{% block is_active_clientes %} active {% endblock %}
+{% block content %}
 <script>
   /*
   $(function(){
@@ -366,11 +367,15 @@ content %}
             <td>{{ customer.NumRegIdTrib }}</td>
             {% if customer.Address %}
             <td>
-              {{ customer.Address.Street }}, {{ customer.Address.ExteriorNumber
-              }}, {{ customer.Address.InteriorNumber }}, {{
-              customer.Address.Neighborhood }}, {{ customer.Address.ZipCode }},
-              {{ customer.Address.Locality }}, {{ customer.Address.Municipality
-              }}, {{ customer.Address.State }}, {{ customer.Address.Country }}
+              {{ customer.Address.Street }},
+              {{ customer.Address.ExteriorNumber }},
+              {{ customer.Address.InteriorNumber }},
+              {{ customer.Address.Neighborhood }},
+              {{ customer.Address.ZipCode }},
+              {{ customer.Address.Locality }},
+              {{ customer.Address.Municipality }},
+              {{ customer.Address.State }},
+              {{ customer.Address.Country }}
             </td>
             {% else %}
             <td></td>
