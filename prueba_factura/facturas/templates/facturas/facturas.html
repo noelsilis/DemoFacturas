@@ -1,0 +1,129 @@
+{% extends 'facturas/layout/main.html' %} 
+{% load static %} 
+{% block titulo %} Facturas {% endblock titulo %} 
+{% block is_active_facturas %} 
+active
+{% endblock is_active_facturas %} 
+{% block js %}
+<script src="{% static 'js/facturas.js' %}"></script>
+{% endblock %} 
+{% block content %}
+<div class="container pt-lg-5">
+    <div class="card">
+        <div class="card-title">
+            <h3 class="">Facturas</h3>
+        </div>
+        <div class="card-body">
+            <div class="container">
+                <form method="post" action="#" class="ps-3 pe-3" id="form-create-cfdi">
+                    {% csrf_token %}
+                    <style>
+                        .errorlist {
+                            color: #e65f5f;
+                            font-size: 12px;
+                        }
+                    </style>
+                    <div class="form-group mb-2">
+                        <div class="row">
+                            <div class="col">
+                                <label class="mr-sm-2" for="id_select_cliente">Cliente</label>
+                                <select class="form-select mr-sm-2" id="id_select_cliente" name="Name"></select>
+                            </div>
+                            <div class="col">
+                                <label class="mr-sm-2" for="id_select_cliente">Uso CFDI</label>
+                                <select class="form-select mr-sm-2" id="id_select_cfdi_use" name="CfdiUse"></select>                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="mr-sm-2" for="id_select_forma_pago">Forma de Pago</label>
+                                <select class="form-select mr-sm-2" id="id_select_forma_pago"></select>
+                            </div>
+                            <div class="col">
+                                <label class="mr-sm-2" for="id_select_cliente">Metodo de Pago</label>
+                                <select class="form-select mr-sm-2" id="id_select_metodo_pago"></select>                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label class="mr-sm-2" for="id_select_producto">Producto</label>
+                                <select class="form-select mr-sm-2" id="id_select_producto" name="Item" onchange="listarProductos('{% url 'get_product' %}')"></select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col text-end">
+                                <input class="btn btn-rounded btn-primary" type="submit" value="Create" />  
+                            </div>
+                        </div>
+                        <div class="row">
+                            <table class="table" id="id_tabla_producto">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Cantidad</th>
+                                        <th scope="col">Claves</th>
+                                        <th scope="col">descripción</th>
+                                        <th scope="col">Precio</th>
+                                        <th scope="col">subtotal</th>
+                                        <th scope="col">Descuento</th>
+                                        <th scope="col">Impuestos</th>
+                                        <th scope="col">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="id_tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% comment %} <div class="form-group mb-2">
+                        <label class="mr-sm-2" for="id_select_cliente">Lugar de Expedicion</label>
+                        <select class="form-select mr-sm-2" id="id_select_expedicion"></select>
+                    </div>  {% endcomment %}
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Facturas</h5>
+            <h6 class="card-subtitle mb-3 text-body-secondary">Lista de Facturas</h6>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Folio</th>
+                        <th scope="col">Receptor</th>
+                        <th scope="col">Rfc</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Metodo de Pago</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for factura in facturas %}
+                    <tr>
+                        <th scope="row">{{ factura.Folio }}</th>
+                        <td>{{ factura.TaxName }}</td>
+                        <td>{{ factura.Rfc }}</td>
+                        <td>{{ factura.Date }}</td>
+                        <td>{{ factura.PaymentMethod }}</td>
+                        <td>{{ factura.Total }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="card-title">Facturas</div>
+            {% comment %} <iframe type="text/html" src="{% url 'get_cfdi' %}" title="description"></iframe> {% endcomment %}
+        </div>
+    </div>
+</div>
+<script>
+    obtenerCliente('{% url 'get_clients' %}')
+    obtenerProducto('{% url 'get_product' %}')
+    obtenerFormaPago('{% url 'get_payment_form' %}')
+    obtenerUso('{% url 'get_cfdi_use' %}')
+    obtenerMetodo('{% url 'get_payment_method' %}')
+</script>
+{% endblock %}
