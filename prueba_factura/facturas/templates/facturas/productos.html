@@ -2,6 +2,23 @@
 {% block titulo %} Productos {% endblock %}
 {% block is_active_productos %} active {% endblock %}
 {% block content %}
+<script>
+  $(function () {
+    //IVA
+    $("#btnAddProduct").click(function () {
+      $.ajax({
+        url: "new-product-iva/",
+        dataType: "json",
+        success: function (data) {
+          $.each(data.iva, function (i, obj) {
+            //var cfdi_uses ="<option value=" + obj.Value + ">" + obj.Name + "</option>";
+            //$(cfdi_uses).appendTo("#Country");
+          });
+        },
+      });
+    });
+  });
+</script>
 <div class="container pt-lg-5">
   <div class="row py-lg-4">
     <div class="col-lg-6">
@@ -10,8 +27,9 @@
     <div class="col-lg-6 text-end pb-0">
       <!-- Button trigger modal -->
       <button
+        id="btnAddProduct"
         type="button"
-        class="btn btn-primary disabled"
+        class="btn btn-primary"
         data-bs-toggle="modal"
         data-bs-target="#staticBackdrop"
       >

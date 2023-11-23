@@ -28,6 +28,17 @@ def catalogs_Addr(request):
         }
     return JsonResponse(data)
 
+def catalogs_iva(request):
+    facturama._credentials = (config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
+    if is_ajax(request=request):
+        iva = facturama.CountriesCatalog.query("")
+        print(iva)
+        data = {
+            'iva': iva
+        }
+    return JsonResponse(data)
+#FIN AJAX
+
 # Create your views here.
 def obtenerClientes(request):
     facturama._credentials = (config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
