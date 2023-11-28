@@ -47,6 +47,34 @@ async function obtenerUso(url) {
     }
 }
 
+/**
+ * Se utiliza para obtener los datos de los tipos de cdfi y cargarlos en el SELECT
+ * @param {url} url
+ */
+async function obtenerTypeCfdi(url) {
+    try {
+        const types = await obtenerDatos(url);
+        const id_type = '';
+        cargarTypesCFDI(types, id_type);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+/**
+ * Se utiliza para obtener los datos de los postal codes y cargarlos en el SELECT
+ * @param {url} url
+ */
+async function obtenerPostalCodes(url) {
+    try {
+        const types = await obtenerDatos(url);
+        const id_type = '';
+        cargarPostalCodes(types, id_type);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 async function obtenerMetodo(url) {
     try {
         const metodos = await obtenerDatos(url);
@@ -88,7 +116,7 @@ function cargarClientes(lista, id) {
     for (index in lista) {
         let cliente = lista[index];
         if (cliente.id_cliente == id) {
-            clienteSelect.innerHTML = `<option selected="">${cliente.nombre}</option>`;
+            clienteSelect.innerHTML = `<option value="${cliente.id_cliente}" selected="">${cliente.nombre}</option>`;
         } else {
             const option = document.createElement("option");
             option.value = cliente.id_cliente;
@@ -106,7 +134,7 @@ function cargarFormaPago(lista, id) {
     for (index in lista) {
         let forma = lista[index];
         if (forma.id_forma == id) {
-            formaSelect.innerHTML = `<option selected="">${forma.id_forma+" "+forma.nombre}</option>`;
+            formaSelect.innerHTML = `<option value="${forma.id_forma}" selected="">${forma.id_forma+" "+forma.nombre}</option>`;
         } else {
             const option = document.createElement("option");
             option.value = forma.id_forma;
@@ -124,7 +152,7 @@ function cargarProductos(lista, id) {
     for (index in lista) {
         let producto = lista[index];
         if (producto.Id == id) {
-            productoSelect.innerHTML = `<option selected="">${producto.Name}</option>`;
+            productoSelect.innerHTML = `<option value="${producto.Id}" selected="">${producto.Name}</option>`;
         } else {
             const option = document.createElement("option");
             option.value = producto.Id;
@@ -134,6 +162,10 @@ function cargarProductos(lista, id) {
     }
 }
 
+/**
+ * Se llena la tabla que va a tener los productos para el CFDI
+ * @param {lista} lista
+ */
 function listarProducto(lista) {
     const table = document.getElementById("id_tbody");
     const id_product = document.getElementById("id_select_producto").value;
@@ -168,7 +200,6 @@ function listarProducto(lista) {
             let valor = Object.values(valores);
             //Para cada valor asignarle una posicion en las columnas
             valor.forEach((val) => {
-
                 let td = document.createElement("td");
                 td.innerText = val; // Asignar valor
                 tr.appendChild(td); // Agregar la celda a la tabla
@@ -180,6 +211,10 @@ function listarProducto(lista) {
     });
 }
 
+/**
+ * No se esta utilizando esta función
+ * @deprecated
+ */
 function crearTabla(valor) {
     let td = document.createElement("td");
     td.innerText = val; // Asignar valor
@@ -200,6 +235,52 @@ function cargarUso(lista, id) {
             const option = document.createElement("option");
             option.value = uso.id_uso;
             option.textContent = uso.id_uso + " - " + uso.nombre;
+            usoSelect.appendChild(option);
+        }
+    }
+}
+
+/**
+ * Se cargan los tipos de cfdi para crear el CFDI
+ * @param {lista} lista
+ * @param {id} id
+ */
+function cargarTypesCFDI(lista, id) {
+    const usoSelect = document.getElementById("id_select_cfdi_use");
+    if (id == '') {
+        usoSelect.innerHTML = `<option selected="">Choose a type</option>`;
+    }
+    for (index in lista) {
+        let type = lista[index];
+        if (type.id_type == id) {
+            usoSelect.innerHTML = `<option value="${type.id_type}" selected="">${type.nombre}</option>`;
+        } else {
+            const option = document.createElement("option");
+            option.value = type.id_type;
+            option.textContent = type.id_type + " - " + type.nombre;
+            usoSelect.appendChild(option);
+        }
+    }
+}
+
+/**
+ * Se utiliza para obtener los postal codes registrados en facturama
+ * @param {lista} lista
+ * @param {id} id
+ */
+function cargarPostalCodes(lista, id) {
+    const usoSelect = document.getElementById("ExpeditionPlace");
+    if (id == '') {
+        usoSelect.innerHTML = `<option selected="">Choose a type</option>`;
+    }
+    for (index in lista) {
+        let type = lista[index];
+        if (type.id_type == id) {
+            usoSelect.innerHTML = `<option value="${type.id_type}" selected="">${type.nombre}</option>`;
+        } else {
+            const option = document.createElement("option");
+            option.value = type.id_type;
+            option.textContent = type.id_type + " - " + type.nombre;
             usoSelect.appendChild(option);
         }
     }

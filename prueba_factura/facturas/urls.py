@@ -23,5 +23,10 @@ urlpatterns = [
     path('get-forms/', views.obtenerForma, name="get_payment_form"),
     path('get-usos-cfdi/', views.obtenerUsoCFDI, name="get_cfdi_use"),
     path('metodos', views.obtenerMetodo, name="get_payment_method"),
+    path('get-type-cfdi/', views.obtenertypeCFDI, name="get_cfdi_type"),
+    path('get-postal-codes/', views.obtenerPostalCodesCatalog, name="get_postal_codes"),
+
+    #Crear Factura
+    path('new-factura/', views.crearCfdi, name="new_factura")
 ]
 

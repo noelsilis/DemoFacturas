@@ -32,6 +32,7 @@ def catalogs_Addr(request):
 
 def catalogs_iva(request):
     facturama._credentials = (config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
+    facturama.sandbox = True
     if is_ajax(request=request):
         iva = facturama.CountriesCatalog.query("")
         print(iva)
@@ -46,8 +47,6 @@ def obtenerClientes(request):
     facturama._credentials = (config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
     facturama.sandbox = True
     clientes = facturama.Client.all(0)
-    #cfdiUses = facturama.CfdiUsesCatalog.query("cass880926vd1")
-    #regimenFiscal = facturama.FiscalRegimensCatalog.all(0)
     context ={
         "customers":clientes
     }
@@ -205,7 +204,7 @@ def obtenerProducto(request):
     for item in productos:
         if "FKdV2LaevbG0mlS6FUB6sg2" in item.values():
             producto = item.items()
-            print(producto)
+            #print(producto)
 
     # data = [{'id_producto': p['Id'], 'nombre': p['Name']} for p in productos]
     return JsonResponse({'message': 'List of Products', 'data': productos}, safe=False)
@@ -224,12 +223,28 @@ def obtenerUsoCFDI(request):
     data = [{'id_uso': u['Value'], 'nombre': u['Name']} for u in usos]
     return JsonResponse({'message': 'List of Uses Cfdi', 'data': data}, safe=False)
 
+def obtenertypeCFDI(request):
+    facturama._credentials = (config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
+    facturama.sandbox = True
+    types = facturama.CfdiTypesCatalog.query()
+    data = [{'id_type': u['Value'], 'nombre': u['Name']} for u in types]
+    return JsonResponse({'message': 'List of Uses Cfdi', 'data': data}, safe=False)
+
 def obtenerMetodo(request):
     facturama._credentials = (config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
     facturama.sandbox = True
     metodos = facturama.PaymentMethodsCatalog.query()
     data = [{'id_metodo':m['Value'],'nombre':m['Name']} for m in metodos]
     return JsonResponse({'message': 'List of Methods', 'data': data}, safe=False)
+
+def obtenerPostalCodesCatalog(request):
+    facturama._credentials = (config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
+    facturama.sandbox = True
+    ##Se debde de colocar un valor para obtener el valor de los codigos postales
+    postalCodes = facturama.PostalCodesCatalog.query()
+    print("Catalogo de Códigos postales ====> ", postalCodes)
+    data = [{'id_type': u['Value'], 'nombre': u['Name']} for u in postalCodes]
+    return JsonResponse({'message': 'List of Uses Cfdi', 'data': data}, safe=False)
 
 def createCfdi(request):
     if request.method == "POST":
@@ -298,3 +313,56 @@ def createCfdi(request):
         json = json.loads(data)
         return render(request, 'facturas.html', {'data': data})
 
+#CFDIByCheco
+def crearCfdi(request):
+    facturama._credentials = (config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
+    facturama.sandbox = True
+    #datos CFDI
+    if request.method == "POST":
+        datosCliente = ["Cliente","PaymentForm","PaymentMethod","CfdiType","NameId","Folio","Exportation","ExpeditionPlace","TableItems"]
+        CFDI = {}
+        receiver={}
+        cliente_object = {}
+        for clave in datosCliente:
+            print("CLAVE ===> ",clave)
+            match clave:
+                case "Cliente":
+                    cliente_object = facturama.Client.retrieve(request.POST.get(clave))
+                    print("datos del cliente ==>",cliente_object)
+                    receiver["Name"] = cliente_object["Name"]
+                    receiver["CfdiUse"] = cliente_object["CfdiUse"]
+                    receiver["Rfc"] = cliente_object["Rfc"]
+                    receiver["FiscalRegime"] = cliente_object["FiscalRegime"]
+                    receiver["TaxZipCode"] = cliente_object["TaxZipCode"]
+                case "PaymentForm":
+                    CFDI["PaymentForm"] = request.POST.get(clave)
+                    print("PaymentForm ==>",request.POST.get(clave))
+                case "PaymentMethod":
+                    CFDI["PaymentMethod"] = request.POST.get(clave)
+                    print("PaymentMethod ==>",request.POST.get(clave))
+                case "CfdiType":
+                    CFDI["CfdiType"] = request.POST.get(clave)
+                    print("CfdiType ==>",request.POST.get(clave))
+                case "NameId":
+                    CFDI["NameId"] = request.POST.get(clave)
+                    print("NameId ==>",request.POST.get(clave))
+                case "Folio":
+                    CFDI["Folio"] = request.POST.get(clave)
+                    print("Folio ==>",request.POST.get(clave))
+                case "Exportation":
+                    CFDI["Exportation"] = request.POST.get(clave)
+                    print("Exportation ==>",request.POST.get(clave))
+                case "ExpeditionPlace":
+                    CFDI["ExpeditionPlace"] = request.POST.get(clave)
+                    print("ExpeditionPlace ==>",request.POST.get(clave))
+                case "TableItems":
+                    print("datos del producto ==>",request.POST.get(clave))
+                    #product_object = facturama.Product.retrieve(request.POST.get(clave))
+                    #print("datos del producto ==>",product_object)
+                    for obj in request.POST.get(clave):
+                        print(obj)
+
+
+        CFDI["Receiver"] = receiver
+    #facturas = facturama.Cfdi.listAll()
+    return render(request, 'facturas/facturas.html')
