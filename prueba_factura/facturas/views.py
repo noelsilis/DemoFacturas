@@ -328,8 +328,9 @@ def crearCfdi(request):
             match clave:
                 case "Cliente":
                     cliente_object = facturama.Client.retrieve(request.POST.get(clave))
-                    print("datos del cliente ==>",cliente_object)
+                    #print("datos del cliente ==>",cliente_object)
                     receiver["Name"] = cliente_object["Name"]
+                    #ToDo: Investigar que CFDIUse son con los que se puede facturar
                     receiver["CfdiUse"] = cliente_object["CfdiUse"]
                     receiver["Rfc"] = cliente_object["Rfc"]
                     receiver["FiscalRegime"] = cliente_object["FiscalRegime"]
@@ -372,13 +373,16 @@ def crearCfdi(request):
                         Tax={}
                         Tax["Name"] = t["Name"]
                         Tax["Rate"] = t["Rate"]
+                        #ToDo: Ver que se pone exactamente en el TOTAL del tax
                         Tax["Total"] =t["Rate"]
+                        #ToDo: Ver que se coloca exactamente en BASE
                         Tax["Base"] = "1"
                         Tax["IsRetention"] = t["IsRetention"]
                         Tax["IsFederalTax"] = t["IsFederalTax"]
 
                         Taxes=Tax
                     item["Taxes"] = [Taxes]
+                    #ToDo:Revisar la formula para sacar el total
                     item["Total"] = ((product_object["Price"] * quantity) + 0.16)
                     Items = item
         CFDI["Receiver"] = receiver
