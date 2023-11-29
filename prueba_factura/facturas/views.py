@@ -388,6 +388,6 @@ def crearCfdi(request):
         CFDI["Receiver"] = receiver
         CFDI["Items"] = [Items]
         #print("DATOS FACTURA ==>", CFDI)
-        #facturama.Cfdi.create(CFDI)
+    facturama.Cfdi.create(CFDI)
     facturas = facturama.Cfdi.listAll()
     return render(request, 'facturas/facturas.html',{'facturas': facturas})
