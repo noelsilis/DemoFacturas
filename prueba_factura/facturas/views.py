@@ -319,12 +319,12 @@ def crearCfdi(request):
     facturama.sandbox = True
     #datos CFDI
     if request.method == "POST":
-        datosCliente = ["Cliente","PaymentForm","PaymentMethod","CfdiType","NameId","Folio","Exportation","ExpeditionPlace","TableItems"]
+        datosCliente = ["Cliente","PaymentForm","PaymentMethod","CfdiType","NameId","Folio","Exportation","ExpeditionPlace","Producto"]
         CFDI = {}
         receiver={}
         cliente_object = {}
+        Items=[]
         for clave in datosCliente:
-            print("CLAVE ===> ",clave)
             match clave:
                 case "Cliente":
                     cliente_object = facturama.Client.retrieve(request.POST.get(clave))
@@ -336,33 +336,54 @@ def crearCfdi(request):
                     receiver["TaxZipCode"] = cliente_object["TaxZipCode"]
                 case "PaymentForm":
                     CFDI["PaymentForm"] = request.POST.get(clave)
-                    print("PaymentForm ==>",request.POST.get(clave))
                 case "PaymentMethod":
                     CFDI["PaymentMethod"] = request.POST.get(clave)
-                    print("PaymentMethod ==>",request.POST.get(clave))
                 case "CfdiType":
                     CFDI["CfdiType"] = request.POST.get(clave)
-                    print("CfdiType ==>",request.POST.get(clave))
                 case "NameId":
                     CFDI["NameId"] = request.POST.get(clave)
-                    print("NameId ==>",request.POST.get(clave))
                 case "Folio":
                     CFDI["Folio"] = request.POST.get(clave)
-                    print("Folio ==>",request.POST.get(clave))
                 case "Exportation":
                     CFDI["Exportation"] = request.POST.get(clave)
-                    print("Exportation ==>",request.POST.get(clave))
                 case "ExpeditionPlace":
                     CFDI["ExpeditionPlace"] = request.POST.get(clave)
-                    print("ExpeditionPlace ==>",request.POST.get(clave))
-                case "TableItems":
-                    print("datos del producto ==>",request.POST.get(clave))
-                    #product_object = facturama.Product.retrieve(request.POST.get(clave))
-                    #print("datos del producto ==>",product_object)
-                    for obj in request.POST.get(clave):
-                        print(obj)
+                case "Producto":
+                    product_object = facturama.Product.retrieve(request.POST.get(clave))
+                    #for p in product_object:
+                    #    print("Clave=> ",p,"- Dato => ",product_object.get(p))
+                    Taxes=[]
+                    quantity=1
+                    item ={}
+                    item["Quantity"]="1"
+                    item["ProductCode"] = product_object["CodeProdServ"]
+                    item["UnitCode"] = product_object["UnitCode"]
+                    item["Unit"] = product_object["Unit"]
+                    item["Description"] = product_object["Description"]
+                    item["IdentificationNumber"] = product_object["IdentificationNumber"]
+                    item["UnitPrice"] = product_object["Price"]
+                    item["Subtotal"] = product_object["Price"] * quantity
+                        #01 - No objeto de impuesto
+                        #02 - (Sí objeto de impuesto), se deben desglosar los Impuestos a nivel de Concepto.
+                        #03 - (Sí objeto del impuesto y no obligado al desglose) no se desglosan impuestos a nivel Concepto.
+                        #04 - (Sí Objeto de impuesto y no causa impuesto)
+                    item["TaxObject"] = "02"
+                    for t in product_object["Taxes"]:
+                        Tax={}
+                        Tax["Name"] = t["Name"]
+                        Tax["Rate"] = t["Rate"]
+                        Tax["Total"] =t["Rate"]
+                        Tax["Base"] = "1"
+                        Tax["IsRetention"] = t["IsRetention"]
+                        Tax["IsFederalTax"] = t["IsFederalTax"]
 
-
+                        Taxes=Tax
+                    item["Taxes"] = [Taxes]
+                    item["Total"] = ((product_object["Price"] * quantity) + 0.16)
+                    Items = item
         CFDI["Receiver"] = receiver
-    #facturas = facturama.Cfdi.listAll()
-    return render(request, 'facturas/facturas.html')
+        CFDI["Items"] = [Items]
+        #print("DATOS FACTURA ==>", CFDI)
+        #facturama.Cfdi.create(CFDI)
+    facturas = facturama.Cfdi.listAll()
+    return render(request, 'facturas/facturas.html',{'facturas': facturas})

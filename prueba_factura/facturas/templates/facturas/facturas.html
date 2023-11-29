@@ -94,13 +94,12 @@ active
                                     name="Producto"
                                     class="form-select mr-sm-2"
                                     id="id_select_producto"
-                                    name="Item"
                                     onchange="listarProductos('{% url 'get_product' %}')">
                                 </select>
                             </div>
                         </div>
                         <div class="row">
-                            <table class="table" name="TableItems" id="id_tabla_producto">
+                            <table class="table" id="id_tabla_producto">
                                 <thead>
                                     <tr>
                                         <th scope="col">Cantidad</th>

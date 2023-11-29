@@ -193,7 +193,7 @@ function listarProducto(lista) {
             let Discount = 0;
             let Total = Price + (Price * Rate);
             let valores = { Quantity, UnitCode, Description, Price, Subtotal, Discount, Rate, Total };
-            console.log(valores);
+            console.log("valores producto",valores);
             //FIN DESESTRUCTURACION
 
             // Traer los valores del producto
