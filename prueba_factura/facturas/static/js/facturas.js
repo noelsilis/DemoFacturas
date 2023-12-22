@@ -28,6 +28,7 @@ async function obtenerProducto(url) {
     }
 }
 
+//lista los productos
 async function listarProductos(url) {
     try {
         const productos = await obtenerDatos(url);
@@ -152,7 +153,7 @@ function cargarProductos(lista, id) {
     for (index in lista) {
         let producto = lista[index];
         if (producto.Id == id) {
-            productoSelect.innerHTML = `<option value="${producto.Id}" selected="">${producto.Name}</option>`;
+            productoSelect.innerHTML = `<option selected="">${producto.Name}</option>`;
         } else {
             const option = document.createElement("option");
             option.value = producto.Id;

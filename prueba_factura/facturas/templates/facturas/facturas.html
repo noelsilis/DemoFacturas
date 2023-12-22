@@ -90,14 +90,50 @@ active
                         <div class="row">
                             <div class="col">
                                 <label class="mr-sm-2" for="id_select_producto">Producto</label>
+                                <!--
                                 <select
                                     name="Producto"
                                     class="form-select mr-sm-2"
                                     id="id_select_producto"
                                     onchange="listarProductos('{% url 'get_product' %}')">
+                                -->
+                                <select
+                                    name="Producto"
+                                    class="form-select mr-sm-2"
+                                    id="id_select_producto">
                                 </select>
                             </div>
                         </div>
+                        <script>
+                            $(function () {
+                                $("#id_select_producto").change(function () {
+                                    var id_producto = $(this).val();
+                                    $.ajax({
+                                        url: "{% url 'producto_cfdi' %}",
+                                        data: {
+                                            id_producto: id_producto,
+                                        },
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            var tbody = document.getElementById("id_tabla_producto").getElementsByTagName("tbody")[0];
+                                            $.each(data.lista_productos,function(i,obj){
+                                                var rowCount = $("#id_tabla_producto >tbody >tr").length;
+                                                var items =
+                                                "<tr>"+
+                                                    "<input type='hidden' name='id_producto_"+rowCount+"' class='form-control' id='objproducto' value='"+obj.Id+"' />"+
+                                                    "<td><input type='text' name='Cantidad_"+obj.Id+"' class='form-control' id='id_cantidad' placeholder='Cantidad' required /></td>"+
+                                                    "<td>"+obj.UnitCode+"</td>"+
+                                                    "<td>"+obj.Name+"-"+obj.Description+"</td>"+
+                                                    "<td>"+obj.Price+"</td>"+
+                                                "</tr>"
+                                                ;
+                                                tbody.insertRow().innerHTML=items;
+                                            });
+                                        },
+                                    });
+                                });
+                            });
+                        </script>
                         <div class="row">
                             <table class="table" id="id_tabla_producto">
                                 <thead>
@@ -106,13 +142,9 @@ active
                                         <th scope="col">Claves</th>
                                         <th scope="col">descripción</th>
                                         <th scope="col">Precio</th>
-                                        <th scope="col">subtotal</th>
-                                        <th scope="col">Descuento</th>
-                                        <th scope="col">Impuestos</th>
-                                        <th scope="col">Total</th>
                                     </tr>
                                 </thead>
-                                <tbody id="id_tbody">
+                                <tbody>
                                 </tbody>
                             </table>
                         </div>

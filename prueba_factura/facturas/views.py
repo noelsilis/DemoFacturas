@@ -40,6 +40,23 @@ def catalogs_iva(request):
             'iva': iva
         }
     return JsonResponse(data)
+
+#obtener producto por id
+def get_product(request):
+    #print("request: ", request)
+    facturama._credentials = (config('FACTURAMA_USER'), config('FACTURAMA_PASSWORD'))
+    facturama.sandbox = True
+    id_producto = request.GET.get('id_producto',None)
+    #print("producto_ => ",id_producto)
+    if is_ajax(request=request):
+        producto = facturama.Product.retrieve(id_producto)
+        #print("producto", producto)
+        lista_productos = []
+        lista_productos.append(producto)
+        data ={
+            'lista_productos':lista_productos
+        }
+    return JsonResponse(data)
 #FIN AJAX
 
 # Create your views here.
@@ -319,7 +336,7 @@ def crearCfdi(request):
     facturama.sandbox = True
     #datos CFDI
     if request.method == "POST":
-        datosCliente = ["Cliente","PaymentForm","PaymentMethod","CfdiType","NameId","Folio","Exportation","ExpeditionPlace","Producto"]
+        datosCliente = ["Cliente","PaymentForm","PaymentMethod","CfdiType","NameId","Folio","Exportation","ExpeditionPlace"]
         CFDI = {}
         receiver={}
         cliente_object = {}
@@ -350,44 +367,64 @@ def crearCfdi(request):
                 case "ExpeditionPlace":
                     CFDI["ExpeditionPlace"] = request.POST.get(clave)
                 case "Producto":
-                    product_object = facturama.Product.retrieve(request.POST.get(clave))
-                    #for p in product_object:
-                    #    print("Clave=> ",p,"- Dato => ",product_object.get(p))
-                    Taxes=[]
-                    quantity=1
-                    item ={}
-                    item["Quantity"]="1"
-                    item["ProductCode"] = product_object["CodeProdServ"]
-                    item["UnitCode"] = product_object["UnitCode"]
-                    item["Unit"] = product_object["Unit"]
-                    item["Description"] = product_object["Description"]
-                    item["IdentificationNumber"] = product_object["IdentificationNumber"]
-                    item["UnitPrice"] = product_object["Price"]
-                    item["Subtotal"] = product_object["Price"] * quantity
-                        #01 - No objeto de impuesto
-                        #02 - (Sí objeto de impuesto), se deben desglosar los Impuestos a nivel de Concepto.
-                        #03 - (Sí objeto del impuesto y no obligado al desglose) no se desglosan impuestos a nivel Concepto.
-                        #04 - (Sí Objeto de impuesto y no causa impuesto)
-                    item["TaxObject"] = "02"
-                    for t in product_object["Taxes"]:
-                        Tax={}
-                        Tax["Name"] = t["Name"]
-                        Tax["Rate"] = t["Rate"]
-                        #ToDo: Ver que se pone exactamente en el TOTAL del tax
-                        Tax["Total"] =t["Rate"]
-                        #ToDo: Ver que se coloca exactamente en BASE
-                        Tax["Base"] = "1"
-                        Tax["IsRetention"] = t["IsRetention"]
-                        Tax["IsFederalTax"] = t["IsFederalTax"]
+                    print(clave)
 
-                        Taxes=Tax
-                    item["Taxes"] = [Taxes]
-                    #ToDo:Revisar la formula para sacar el total
-                    item["Total"] = ((product_object["Price"] * quantity) + 0.16)
-                    Items = item
         CFDI["Receiver"] = receiver
-        CFDI["Items"] = [Items]
-        #print("DATOS FACTURA ==>", CFDI)
+
+        lista_producto_cantidad = get_list_producto(request)
+        print("LISTA PRODUCTO CANTIDAD ==>", lista_producto_cantidad)
+        for obj in lista_producto_cantidad:
+            #Taxes=[]
+            item ={}
+            print("Id ==> ",obj['Id_producto']," Cantidad ===>", obj['Cantidad'])
+            product = facturama.Product.retrieve(obj['Id_producto'])
+            print("Product ==>", product)
+            quantity = obj['Cantidad']
+            subtotal = float(quantity) * product['Price']
+            total = subtotal
+            if len(product['Taxes']) > 0:
+                product['Taxes'][0]['Total'] = product['Price'] * product['Taxes'][0]['Rate']
+                product['Taxes'][0]['Base'] = subtotal
+                total = subtotal + (product['Taxes'][0]['Total'] * float(quantity))
+
+            item["ProductCode"] = product["CodeProdServ"]
+            item["IdentificationNumber"] = product["IdentificationNumber"]
+            item["Description"] = product["Description"]
+            item["Unit"] = product["Unit"]
+            item["UnitCode"] = product["UnitCode"]
+            item["UnitPrice"] = product["Price"]
+            item["Quantity"]=quantity
+            item["Subtotal"] = subtotal
+            item["TaxObject"] = product['ObjetoImp']
+            #print("length ", len(product["Taxes"]))
+            if len(product["Taxes"]) != 0:
+                item["Taxes"] = product["Taxes"]
+            item["Total"] = total
+            Items.append(item)
+
+        CFDI["Items"] = Items
+        print("DATOS FACTURA ==>", CFDI)
     facturama.Cfdi.create(CFDI)
     facturas = facturama.Cfdi.listAll()
     return render(request, 'facturas/facturas.html',{'facturas': facturas})
+
+#Funcion de busqueda de cantidad y productos de la tabla
+def get_list_producto(request):
+    product_quantity = []
+    i=0
+    for key in request.POST:
+        ident = "id_producto_"+str(i)
+        prqa = {}
+        if request.POST.get(ident):
+            #print("identificador ===> ",request.POST.get(ident))
+            prqa['Id_producto'] = request.POST.get(ident)
+            id_prod = request.POST.get(ident)
+        quant = "Cantidad_"+str(id_prod)
+        if request.POST.get(quant):
+            #print("quantity ===> ",request.POST.get(quant))
+            prqa['Cantidad'] = request.POST.get(quant)
+            id_prod = ""
+        if len(prqa) != 0:
+            product_quantity.append(prqa)
+        i = 1+i
+    return product_quantity
